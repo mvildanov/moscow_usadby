@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   .map-section {
     display: flex;
@@ -27,40 +28,9 @@
     border-radius: 4px;
     overflow: hidden;
   }
-  .pin {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    font-family: 'PT Serif', serif;
-  }
-  .pin .dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--brick);
-    border: 1.5px solid var(--paper-deep);
-  }
-  .pin.active .dot {
-    width: 13px;
-    height: 13px;
-    background: var(--ochre);
-    border: 2px solid var(--moss-deep);
-  }
-  .pin .label {
-    font-size: 12px;
-    color: var(--moss-deep);
-    white-space: nowrap;
-    background: rgba(242,234,211,0.85);
-    padding: 1px 5px;
-  }
-  .pin.dim { opacity: 0.3; }
+  #leafletMap { position: absolute; inset: 0; }
+  .leaflet-tile { filter: sepia(0.25) saturate(0.75) brightness(1.02); }
+  .leaflet-container { font-family: 'Inter', sans-serif; background: var(--paper-deep); }
 
   .info-panel {
     flex: 1 1 280px;
@@ -81,6 +51,14 @@
   }
   .info-panel .meta { font-size: 12px; color: var(--ink-soft); margin: 0 0 14px; }
   .info-panel p.desc { font-size: 14px; line-height: 1.65; margin: 0 0 16px; color: var(--ink); flex: 1; }
+  .info-panel .routes { display: flex; gap: 14px; margin-bottom: 14px; }
+  .info-panel .routes a {
+    font-size: 12px;
+    color: var(--moss-deep);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--moss-deep);
+  }
+  .info-panel .routes a:hover { color: var(--brick); border-color: var(--brick); }
   .info-panel a.more {
     font-size: 13px;
     font-weight: 600;
@@ -141,16 +119,7 @@
 
 <section class="map-section">
   <div class="map-wrap" id="mapWrap">
-    <svg viewBox="0 0 460 440" style="position:absolute; inset:0; width:100%; height:100%;" aria-hidden="true">
-      <path d="M70,90 C50,150 40,240 65,310 C88,375 150,415 225,420 C310,425 385,375 410,305 C432,240 420,155 380,100 C335,40 255,18 185,24 C125,29 90,48 70,90 Z"
-            fill="none" stroke="#C9B87E" stroke-width="1.2"/>
-      <circle cx="230" cy="220" r="62" fill="none" stroke="#C9B87E" stroke-width="1" stroke-dasharray="2,4"/>
-      <line x1="230" y1="60" x2="230" y2="400" stroke="#D9C99A" stroke-width="0.7" stroke-dasharray="1,5"/>
-      <line x1="80" y1="220" x2="400" y2="220" stroke="#D9C99A" stroke-width="0.7" stroke-dasharray="1,5"/>
-      <circle cx="230" cy="220" r="3.5" fill="#2C3A24"/>
-      <text x="230" y="238" text-anchor="middle" font-size="11" fill="#6B6350" font-family="PT Serif, serif">Москва</text>
-    </svg>
-    <div id="pins"></div>
+    <div id="leafletMap"></div>
   </div>
   <div class="info-panel" id="infoPanel"></div>
 </section>
@@ -164,8 +133,10 @@
 
 <footer>Навигатор по усадьбам Москвы и области · в разработке</footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
   let estates = [];
+  let map, markers = [];
   const cats = ["Все", "Дворцы", "Парки", "Литературные", "Редкие"];
   let filter = "Все";
   let query = "";
@@ -175,26 +146,54 @@
     return (filter === "Все" || e.cat === filter) && e.name.toLowerCase().includes(query.toLowerCase());
   }
 
-  function renderPins() {
-    document.getElementById("pins").innerHTML = estates.map((e, i) => `
-      <button class="pin ${i === active ? "active" : ""} ${matches(e) ? "" : "dim"}" data-i="${i}" style="left:${e.x}%; top:${e.y}%;" aria-label="${e.name}">
-        <span class="dot"></span>
-        <span class="label">${e.name}</span>
-      </button>
-    `).join("");
-    document.querySelectorAll(".pin").forEach(b =>
-      b.addEventListener("click", () => { active = parseInt(b.dataset.i); renderPins(); renderPanel(); })
-    );
+  function styleFor(i) {
+    const isActive = i === active;
+    const ok = matches(estates[i]);
+    return {
+      radius: isActive ? 10 : 7,
+      color: isActive ? "#2C3A24" : "#FFFFFF",
+      weight: isActive ? 2 : 1.5,
+      fillColor: isActive ? "#C68A2E" : "#A2472E",
+      fillOpacity: ok ? 0.9 : 0.2,
+      opacity: ok ? 1 : 0.2
+    };
+  }
+
+  function initMap() {
+    map = L.map("leafletMap", { scrollWheelZoom: false });
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 18
+    }).addTo(map);
+
+    markers = estates.map((e, i) => {
+      const m = L.circleMarker([e.lat, e.lng], styleFor(i)).addTo(map);
+      m.on("click", () => { active = i; refreshMarkers(); renderPanel(); });
+      return m;
+    });
+
+    const bounds = L.latLngBounds(estates.map(e => [e.lat, e.lng]));
+    map.fitBounds(bounds, { padding: [30, 30] });
+  }
+
+  function refreshMarkers() {
+    markers.forEach((m, i) => m.setStyle(styleFor(i)));
   }
 
   function renderPanel() {
     const e = estates[active];
     if (!e) return;
+    const yandex = `https://yandex.ru/maps/?rtext=~${e.lat},${e.lng}&rtt=auto`;
+    const google = `https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}`;
     document.getElementById("infoPanel").innerHTML = `
       <span class="badge">${e.cat}</span>
       <h3>${e.name}</h3>
       <p class="meta">${e.meta}</p>
       <p class="desc">${e.teaser}</p>
+      <div class="routes">
+        <a href="${yandex}" target="_blank" rel="noopener">Маршрут: Яндекс Карты →</a>
+        <a href="${google}" target="_blank" rel="noopener">Google Карты →</a>
+      </div>
       <a class="more" href="usadba.html?slug=${e.slug}">Читать полностью →</a>
     `;
   }
@@ -228,7 +227,7 @@
 
   function renderAll() {
     renderChips();
-    renderPins();
+    refreshMarkers();
     renderPanel();
     renderGrid();
   }
@@ -240,7 +239,15 @@
 
   fetch("estates.json")
     .then(r => r.json())
-    .then(data => { estates = data; renderAll(); })
+    .then(data => {
+      estates = data;
+      const params = new URLSearchParams(location.search);
+      const focus = params.get("focus");
+      const idx = estates.findIndex(e => e.slug === focus);
+      if (idx >= 0) active = idx;
+      initMap();
+      renderAll();
+    })
     .catch(() => {
       document.getElementById("grid").innerHTML =
         `<p style="color:var(--brick); font-size:14px;">Не удалось загрузить данные усадеб (estates.json). Проверьте, что файл лежит рядом с index.html.</p>`;
