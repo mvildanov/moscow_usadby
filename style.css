@@ -1,0 +1,129 @@
+:root {
+  --paper: #F2EAD3;
+  --paper-deep: #E8DBB4;
+  --ink: #2B2A21;
+  --ink-soft: #6B6350;
+  --moss: #3F5233;
+  --moss-deep: #2C3A24;
+  --ochre: #C68A2E;
+  --brick: #A2472E;
+  --line: #D9C99A;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+}
+.wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+a { color: inherit; }
+
+/* Hero */
+header.hero { padding: 52px 24px 30px; text-align: center; }
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brick);
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+h1 {
+  font-family: 'PT Serif', serif;
+  font-weight: 700;
+  font-size: 40px;
+  color: var(--moss-deep);
+  margin: 0 0 12px;
+  letter-spacing: -0.01em;
+}
+.tagline {
+  font-size: 15px;
+  color: var(--ink-soft);
+  max-width: 460px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+.flourish {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 22px 0 0;
+}
+.flourish span { width: 46px; height: 1px; background: var(--line); }
+.flourish svg { width: 10px; height: 10px; }
+
+/* Chips */
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: var(--paper-deep);
+  color: var(--ink-soft);
+  font-size: 13px;
+  padding: 7px 15px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.chip.active {
+  background: var(--moss);
+  border-color: var(--moss);
+  color: var(--paper);
+}
+
+/* Badge */
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--moss);
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+
+/* Cards (used on index grid and "related" sections) */
+.card {
+  background: var(--paper-deep);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: border-color 0.15s ease;
+}
+.card:hover { border-color: var(--brick); }
+.card .top { height: 8px; background: var(--moss); }
+.card .body { padding: 16px 18px 18px; }
+.card .cat {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brick);
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+.card h3 {
+  font-family: 'PT Serif', serif;
+  font-size: 18px;
+  margin: 0 0 6px;
+  color: var(--moss-deep);
+}
+.card .meta { font-size: 12px; color: var(--ink-soft); margin: 0 0 10px; }
+.card .teaser { font-size: 13px; line-height: 1.55; color: var(--ink); margin: 0; }
+
+footer {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  h1 { font-size: 30px; }
+}

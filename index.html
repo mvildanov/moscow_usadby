@@ -6,63 +6,8 @@
 <title>Усадьбы Москвы и области — навигатор</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
 <style>
-  :root {
-    --paper: #F2EAD3;
-    --paper-deep: #E8DBB4;
-    --ink: #2B2A21;
-    --ink-soft: #6B6350;
-    --moss: #3F5233;
-    --moss-deep: #2C3A24;
-    --ochre: #C68A2E;
-    --brick: #A2472E;
-    --line: #D9C99A;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background: var(--paper);
-    color: var(--ink);
-  }
-  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
-
-  /* Hero */
-  header.hero { padding: 52px 24px 30px; text-align: center; }
-  .eyebrow {
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--brick);
-    font-weight: 600;
-    margin: 0 0 10px;
-  }
-  h1 {
-    font-family: 'PT Serif', serif;
-    font-weight: 700;
-    font-size: 40px;
-    color: var(--moss-deep);
-    margin: 0 0 12px;
-    letter-spacing: -0.01em;
-  }
-  .tagline {
-    font-size: 15px;
-    color: var(--ink-soft);
-    max-width: 460px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
-  .flourish {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin: 22px 0 0;
-  }
-  .flourish span { width: 46px; height: 1px; background: var(--line); }
-  .flourish svg { width: 10px; height: 10px; }
-
-  /* Map section */
   .map-section {
     display: flex;
     gap: 18px;
@@ -124,37 +69,27 @@
     border: 1px solid var(--line);
     border-radius: 4px;
     padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
   }
-  .info-panel .badge {
-    display: inline-block;
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--paper);
-    background: var(--moss);
-    padding: 4px 10px;
-    border-radius: 2px;
-    margin-bottom: 12px;
-  }
+  .info-panel .badge { margin-bottom: 12px; align-self: flex-start; }
   .info-panel h3 {
     font-family: 'PT Serif', serif;
     font-size: 22px;
     margin: 0 0 6px;
     color: var(--moss-deep);
   }
-  .info-panel .meta {
-    font-size: 12px;
-    color: var(--ink-soft);
-    margin: 0 0 14px;
+  .info-panel .meta { font-size: 12px; color: var(--ink-soft); margin: 0 0 14px; }
+  .info-panel p.desc { font-size: 14px; line-height: 1.65; margin: 0 0 16px; color: var(--ink); flex: 1; }
+  .info-panel a.more {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--brick);
+    text-decoration: none;
+    align-self: flex-start;
   }
-  .info-panel p.desc {
-    font-size: 14px;
-    line-height: 1.65;
-    margin: 0;
-    color: var(--ink);
-  }
+  .info-panel a.more:hover { text-decoration: underline; }
 
-  /* Filters */
   .filters {
     max-width: 1000px;
     margin: 0 auto;
@@ -176,24 +111,7 @@
     font-family: inherit;
     color: var(--ink);
   }
-  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
-  .chip {
-    border-radius: 20px;
-    border: 1px solid var(--line);
-    background: var(--paper-deep);
-    color: var(--ink-soft);
-    font-size: 13px;
-    padding: 7px 15px;
-    cursor: pointer;
-    font-family: inherit;
-  }
-  .chip.active {
-    background: var(--moss);
-    border-color: var(--moss);
-    color: var(--paper);
-  }
 
-  /* Grid */
   main.grid {
     max-width: 1000px;
     margin: 0 auto;
@@ -202,59 +120,8 @@
     grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
     gap: 18px;
   }
-  .card {
-    background: var(--paper-deep);
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    transition: border-color 0.15s ease;
-  }
-  .card:hover { border-color: var(--brick); }
-  .card .top {
-    height: 8px;
-    background: var(--moss);
-  }
-  .card .body { padding: 16px 18px 18px; }
-  .card .cat {
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--brick);
-    font-weight: 600;
-    margin: 0 0 6px;
-  }
-  .card h3 {
-    font-family: 'PT Serif', serif;
-    font-size: 18px;
-    margin: 0 0 6px;
-    color: var(--moss-deep);
-  }
-  .card .meta {
-    font-size: 12px;
-    color: var(--ink-soft);
-    margin: 0 0 10px;
-  }
-  .card .teaser {
-    font-size: 13px;
-    line-height: 1.55;
-    color: var(--ink);
-    margin: 0;
-  }
-
-  footer {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 24px 48px;
-    font-size: 12px;
-    color: var(--ink-soft);
-    text-align: center;
-  }
 
   @media (max-width: 640px) {
-    h1 { font-size: 30px; }
     .map-wrap { height: 340px; }
   }
 </style>
@@ -298,24 +165,7 @@
 <footer>Навигатор по усадьбам Москвы и области · в разработке</footer>
 
 <script>
-  const estates = [
-    { name: "Архангельское", cat: "Дворцы", meta: "18 км · запад", x: 20, y: 34,
-      desc: "Усадьба Юсуповых на высоком берегу Москвы-реки. Дворец, французский регулярный парк с террасами и статуями, храм-усыпальница." },
-    { name: "Кусково", cat: "Дворцы", meta: "в черте города · юго-восток", x: 78, y: 55,
-      desc: "Парадная летняя резиденция Шереметевых: грот, оранжерея и один из первых в России пейзажных парков." },
-    { name: "Останкино", cat: "Дворцы", meta: "в черте города · север", x: 58, y: 16,
-      desc: "Деревянный дворец-театр Шереметевых с уникальной для XVIII века крепостной театральной машинерией." },
-    { name: "Царицыно", cat: "Парки", meta: "в черте города · юг", x: 48, y: 74,
-      desc: "Неоготическая резиденция, заказанная Екатериной II архитектору Баженову и так и не достроенная при её жизни." },
-    { name: "Коломенское", cat: "Парки", meta: "в черте города · юг", x: 40, y: 84,
-      desc: "Бывшая царская резиденция. Храм Вознесения Господня входит в список Всемирного наследия ЮНЕСКО." },
-    { name: "Абрамцево", cat: "Литературные", meta: "60 км · северо-восток", x: 30, y: 10,
-      desc: "Усадьба Аксаковых, позже Мамонтовых — центр притяжения художников и писателей второй половины XIX века." },
-    { name: "Мелихово", cat: "Литературные", meta: "75 км · юг", x: 36, y: 98,
-      desc: "Здесь Антон Чехов прожил семь лет и написал «Чайку» и «Дядю Ваню». Сохранён подлинный флигель-кабинет." },
-    { name: "Дубровицы", cat: "Редкие", meta: "40 км · юг", x: 84, y: 90,
-      desc: "Церковь Знамения в стиле, не имеющем прямых аналогов в русской архитектуре — на стыке барокко и европейской пластики." }
-  ];
+  let estates = [];
   const cats = ["Все", "Дворцы", "Парки", "Литературные", "Редкие"];
   let filter = "Все";
   let query = "";
@@ -339,11 +189,13 @@
 
   function renderPanel() {
     const e = estates[active];
+    if (!e) return;
     document.getElementById("infoPanel").innerHTML = `
       <span class="badge">${e.cat}</span>
       <h3>${e.name}</h3>
       <p class="meta">${e.meta}</p>
-      <p class="desc">${e.desc}</p>
+      <p class="desc">${e.teaser}</p>
+      <a class="more" href="usadba.html?slug=${e.slug}">Читать полностью →</a>
     `;
   }
 
@@ -359,27 +211,16 @@
   function renderGrid() {
     const list = estates.filter(matches);
     document.getElementById("grid").innerHTML = list.map(e => `
-      <a class="card" href="#" data-name="${e.name}">
+      <a class="card" href="usadba.html?slug=${e.slug}">
         <div class="top"></div>
         <div class="body">
           <p class="cat">${e.cat}</p>
           <h3>${e.name}</h3>
           <p class="meta">${e.meta}</p>
-          <p class="teaser">${e.desc}</p>
+          <p class="teaser">${e.teaser}</p>
         </div>
       </a>
     `).join("") || `<p style="color:var(--ink-soft); font-size:14px;">Ничего не найдено</p>`;
-
-    document.querySelectorAll(".card").forEach(c =>
-      c.addEventListener("click", (ev) => {
-        ev.preventDefault();
-        const i = estates.findIndex(e => e.name === c.dataset.name);
-        active = i;
-        renderPins();
-        renderPanel();
-        document.getElementById("mapWrap").scrollIntoView({ behavior: "smooth", block: "center" });
-      })
-    );
   }
 
   function renderAll() {
@@ -394,7 +235,13 @@
     renderAll();
   });
 
-  renderAll();
+  fetch("estates.json")
+    .then(r => r.json())
+    .then(data => { estates = data; renderAll(); })
+    .catch(() => {
+      document.getElementById("grid").innerHTML =
+        `<p style="color:var(--brick); font-size:14px;">Не удалось загрузить данные усадеб (estates.json). Проверьте, что файл лежит рядом с index.html.</p>`;
+    });
 </script>
 
 </body>
