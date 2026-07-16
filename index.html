@@ -212,7 +212,10 @@
     const list = estates.filter(matches);
     document.getElementById("grid").innerHTML = list.map(e => `
       <a class="card" href="usadba.html?slug=${e.slug}">
-        <div class="top"></div>
+        <div class="photo">
+          <img src="images/${e.slug}.jpg" alt="${e.name}" loading="lazy" onerror="this.style.display='none'">
+          <span class="ph-text">фото усадьбы</span>
+        </div>
         <div class="body">
           <p class="cat">${e.cat}</p>
           <h3>${e.name}</h3>
