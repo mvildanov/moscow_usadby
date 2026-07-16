@@ -145,13 +145,33 @@
 <section class="map-section">
   <div class="map-wrap" id="mapWrap">
     <svg viewBox="0 0 460 440" style="position:absolute; inset:0; width:100%; height:100%;" aria-hidden="true">
-      <path d="M70,90 C50,150 40,240 65,310 C88,375 150,415 225,420 C310,425 385,375 410,305 C432,240 420,155 380,100 C335,40 255,18 185,24 C125,29 90,48 70,90 Z"
-            fill="none" stroke="#C9B87E" stroke-width="1.2"/>
-      <circle cx="230" cy="220" r="62" fill="none" stroke="#C9B87E" stroke-width="1" stroke-dasharray="2,4"/>
-      <line x1="230" y1="60" x2="230" y2="400" stroke="#D9C99A" stroke-width="0.7" stroke-dasharray="1,5"/>
-      <line x1="80" y1="220" x2="400" y2="220" stroke="#D9C99A" stroke-width="0.7" stroke-dasharray="1,5"/>
-      <circle cx="230" cy="220" r="3.5" fill="#2C3A24"/>
-      <text x="230" y="238" text-anchor="middle" font-size="11" fill="#6B6350" font-family="PT Serif, serif">Москва</text>
+      <rect x="8" y="8" width="444" height="424" fill="none" stroke="#A2472E" stroke-width="1.5"/>
+      <rect x="14" y="14" width="432" height="412" fill="none" stroke="#2C3A24" stroke-width="0.5"/>
+
+      <path d="M30,270 C90,240 130,310 190,300 C250,290 230,350 310,345 C370,340 400,370 430,350" fill="none" stroke="#8A8071" stroke-width="1.2"/>
+      <text x="130" y="325" font-family="PT Serif, serif" font-size="11" fill="#8A8071" font-style="italic">р. Москва</text>
+
+      <line x1="230" y1="220" x2="150" y2="25" stroke="#C9B87E" stroke-width="0.7" stroke-dasharray="2,4"/>
+      <line x1="230" y1="220" x2="92" y2="150" stroke="#C9B87E" stroke-width="0.7" stroke-dasharray="2,4"/>
+      <line x1="230" y1="220" x2="359" y2="242" stroke="#C9B87E" stroke-width="0.7" stroke-dasharray="2,4"/>
+      <line x1="230" y1="220" x2="184" y2="370" stroke="#C9B87E" stroke-width="0.7" stroke-dasharray="2,4"/>
+
+      <g stroke="#3F5233" stroke-width="1">
+        <line x1="110" y1="45" x2="115" y2="35"/>
+        <line x1="117" y1="45" x2="122" y2="35"/>
+        <line x1="124" y1="45" x2="129" y2="35"/>
+        <line x1="131" y1="45" x2="136" y2="35"/>
+      </g>
+
+      <g transform="translate(400,55)">
+        <line x1="0" y1="-20" x2="0" y2="20" stroke="#2C3A24" stroke-width="0.7"/>
+        <line x1="-20" y1="0" x2="20" y2="0" stroke="#2C3A24" stroke-width="0.7"/>
+        <path d="M0,-20 L4.5,-6 L0,-9 L-4.5,-6 Z" fill="#2C3A24"/>
+        <text x="0" y="-26" text-anchor="middle" font-family="PT Serif, serif" font-size="11" fill="#2C3A24">С</text>
+      </g>
+
+      <rect x="226" y="216" width="8" height="8" fill="#2C3A24"/>
+      <text x="235" y="230" font-family="PT Serif, serif" font-size="11" fill="#2C3A24">Москва</text>
     </svg>
     <div id="pins"></div>
   </div>
