@@ -59,7 +59,9 @@
     white-space: nowrap;
     background: rgba(242,234,211,0.85);
     padding: 1px 5px;
+    display: none;
   }
+  .pin.active .label { display: block; }
   .pin.dim { opacity: 0.3; }
 
   .info-panel {
@@ -124,8 +126,6 @@
   @media (max-width: 640px) {
     .map-wrap { height: 320px; min-width: 0; flex-basis: 100%; }
     .info-panel { min-width: 0; flex-basis: 100%; }
-    .pin .label { display: none; }
-    .pin.active .label { display: block; }
   }
 </style>
 </head>
