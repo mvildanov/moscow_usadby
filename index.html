@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Усадьбы Москвы и области</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@700&family=Inter:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #F7F1E6;
+    --card: #ffffff;
+    --line: #EAE1CE;
+    --ink: #2C3B2E;
+    --muted: #8A8071;
+    --accent: #2C3B2E;
+    --accent-soft: #E4E9DE;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+  }
+  header {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 56px 24px 24px;
+  }
+  h1 {
+    font-family: 'PT Serif', serif;
+    font-size: 36px;
+    margin: 0 0 10px;
+  }
+  header p {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 480px;
+    line-height: 1.5;
+    margin: 0 0 24px;
+  }
+  input[type="text"] {
+    width: 100%;
+    max-width: 360px;
+    height: 42px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    padding: 0 14px;
+    font-size: 14px;
+    font-family: inherit;
+    display: block;
+  }
+  .chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 24px 0;
+  }
+  .chip {
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 13px;
+    padding: 7px 16px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px 64px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.15s ease;
+  }
+  .card:hover { transform: translateY(-2px); }
+  .card .photo {
+    height: 120px;
+    background: var(--accent-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .card .body { padding: 14px 16px; }
+  .card .body h3 {
+    font-family: 'PT Serif', serif;
+    font-size: 17px;
+    margin: 0 0 4px;
+  }
+  .card .body p {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+  }
+  footer {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px 56px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Усадьбы Москвы и области</h1>
+  <p>Дворцы, парки и литературные гнёзда в часе езды от города — с историей каждого места.</p>
+  <input type="text" placeholder="Поиск по названию или району" id="search">
+</header>
+
+<main>
+  <div class="chips" id="chips"></div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>Портал в разработке · usadby.ru</footer>
+
+<script>
+  const estates = [
+    { name: "Архангельское", cat: "Дворцы", meta: "18 км · запад" },
+    { name: "Кусково", cat: "Дворцы", meta: "в черте города" },
+    { name: "Останкино", cat: "Дворцы", meta: "в черте города" },
+    { name: "Царицыно", cat: "Парки", meta: "в черте города" },
+    { name: "Коломенское", cat: "Парки", meta: "в черте города" },
+    { name: "Абрамцево", cat: "Литературные", meta: "60 км · северо-восток" },
+    { name: "Мелихово", cat: "Литературные", meta: "75 км · юг" },
+    { name: "Быково", cat: "Заброшенные", meta: "35 км · юго-восток" }
+  ];
+  const cats = ["Все", "Дворцы", "Парки", "Литературные", "Заброшенные"];
+  let filter = "Все";
+  let query = "";
+
+  function render() {
+    document.getElementById("chips").innerHTML = cats.map(c =>
+      `<button class="chip${c === filter ? " active" : ""}" data-c="${c}">${c}</button>`
+    ).join("");
+
+    document.querySelectorAll(".chip").forEach(b =>
+      b.addEventListener("click", () => { filter = b.dataset.c; render(); })
+    );
+
+    const list = estates.filter(e =>
+      (filter === "Все" || e.cat === filter) &&
+      e.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    document.getElementById("grid").innerHTML = list.map(e => `
+      <a class="card" href="#">
+        <div class="photo">фото объекта</div>
+        <div class="body">
+          <h3>${e.name}</h3>
+          <p>${e.cat} · ${e.meta}</p>
+        </div>
+      </a>
+    `).join("") || `<p style="color:var(--muted); font-size:14px;">Ничего не найдено</p>`;
+  }
+
+  document.getElementById("search").addEventListener("input", e => {
+    query = e.target.value;
+    render();
+  });
+
+  render();
+</script>
+
+</body>
+</html>
