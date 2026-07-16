@@ -37,7 +37,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0;
+    padding: 14px;
     font-family: 'PT Serif', serif;
   }
   .pin .dot {
@@ -122,7 +122,10 @@
   }
 
   @media (max-width: 640px) {
-    .map-wrap { height: 340px; }
+    .map-wrap { height: 320px; min-width: 0; flex-basis: 100%; }
+    .info-panel { min-width: 0; flex-basis: 100%; }
+    .pin .label { display: none; }
+    .pin.active .label { display: block; }
   }
 </style>
 </head>
