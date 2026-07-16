@@ -3,186 +3,398 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Усадьбы Москвы и области</title>
+<title>Усадьбы Москвы и области — навигатор</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@700&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&family=Inter:wght@400;500;600&display=swap">
 <style>
   :root {
-    --bg: #F7F1E6;
-    --card: #ffffff;
-    --line: #EAE1CE;
-    --ink: #2C3B2E;
-    --muted: #8A8071;
-    --accent: #2C3B2E;
-    --accent-soft: #E4E9DE;
+    --paper: #F2EAD3;
+    --paper-deep: #E8DBB4;
+    --ink: #2B2A21;
+    --ink-soft: #6B6350;
+    --moss: #3F5233;
+    --moss-deep: #2C3A24;
+    --ochre: #C68A2E;
+    --brick: #A2472E;
+    --line: #D9C99A;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     font-family: 'Inter', sans-serif;
-    background: var(--bg);
+    background: var(--paper);
     color: var(--ink);
   }
-  header {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 56px 24px 24px;
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+  /* Hero */
+  header.hero { padding: 52px 24px 30px; text-align: center; }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brick);
+    font-weight: 600;
+    margin: 0 0 10px;
   }
   h1 {
     font-family: 'PT Serif', serif;
-    font-size: 36px;
-    margin: 0 0 10px;
+    font-weight: 700;
+    font-size: 40px;
+    color: var(--moss-deep);
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
   }
-  header p {
-    color: var(--muted);
+  .tagline {
     font-size: 15px;
-    max-width: 480px;
-    line-height: 1.5;
-    margin: 0 0 24px;
+    color: var(--ink-soft);
+    max-width: 460px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  .flourish {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 22px 0 0;
+  }
+  .flourish span { width: 46px; height: 1px; background: var(--line); }
+  .flourish svg { width: 10px; height: 10px; }
+
+  /* Map section */
+  .map-section {
+    display: flex;
+    gap: 18px;
+    padding: 28px 24px 8px;
+    max-width: 1000px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    align-items: stretch;
+  }
+  .map-wrap {
+    position: relative;
+    flex: 1 1 460px;
+    min-width: 300px;
+    height: 440px;
+    background: var(--paper-deep);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .pin {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: 'PT Serif', serif;
+  }
+  .pin .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--brick);
+    border: 1.5px solid var(--paper-deep);
+  }
+  .pin.active .dot {
+    width: 13px;
+    height: 13px;
+    background: var(--ochre);
+    border: 2px solid var(--moss-deep);
+  }
+  .pin .label {
+    font-size: 12px;
+    color: var(--moss-deep);
+    white-space: nowrap;
+    background: rgba(242,234,211,0.85);
+    padding: 1px 5px;
+  }
+  .pin.dim { opacity: 0.3; }
+
+  .info-panel {
+    flex: 1 1 280px;
+    min-width: 260px;
+    background: var(--paper-deep);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 22px 24px;
+  }
+  .info-panel .badge {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--paper);
+    background: var(--moss);
+    padding: 4px 10px;
+    border-radius: 2px;
+    margin-bottom: 12px;
+  }
+  .info-panel h3 {
+    font-family: 'PT Serif', serif;
+    font-size: 22px;
+    margin: 0 0 6px;
+    color: var(--moss-deep);
+  }
+  .info-panel .meta {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+  }
+  .info-panel p.desc {
+    font-size: 14px;
+    line-height: 1.65;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  /* Filters */
+  .filters {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 28px 24px 4px;
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    align-items: center;
   }
   input[type="text"] {
-    width: 100%;
-    max-width: 360px;
-    height: 42px;
-    border-radius: 8px;
+    height: 40px;
+    flex: 1 1 220px;
+    min-width: 180px;
+    border-radius: 3px;
     border: 1px solid var(--line);
-    background: var(--card);
+    background: var(--paper-deep);
     padding: 0 14px;
     font-size: 14px;
     font-family: inherit;
-    display: block;
+    color: var(--ink);
   }
-  .chips {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin: 24px 0;
-  }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
   .chip {
     border-radius: 20px;
     border: 1px solid var(--line);
-    background: var(--card);
-    color: var(--muted);
+    background: var(--paper-deep);
+    color: var(--ink-soft);
     font-size: 13px;
-    padding: 7px 16px;
+    padding: 7px 15px;
     cursor: pointer;
     font-family: inherit;
   }
   .chip.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--bg);
+    background: var(--moss);
+    border-color: var(--moss);
+    color: var(--paper);
   }
-  main {
-    max-width: 960px;
+
+  /* Grid */
+  main.grid {
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 0 24px 64px;
-  }
-  .grid {
+    padding: 20px 24px 70px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
   }
   .card {
-    background: var(--card);
+    background: var(--paper-deep);
     border: 1px solid var(--line);
-    border-radius: 10px;
+    border-radius: 4px;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
-    transition: transform 0.15s ease;
+    display: block;
+    transition: border-color 0.15s ease;
   }
-  .card:hover { transform: translateY(-2px); }
-  .card .photo {
-    height: 120px;
-    background: var(--accent-soft);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    color: var(--muted);
+  .card:hover { border-color: var(--brick); }
+  .card .top {
+    height: 8px;
+    background: var(--moss);
   }
-  .card .body { padding: 14px 16px; }
-  .card .body h3 {
+  .card .body { padding: 16px 18px 18px; }
+  .card .cat {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brick);
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .card h3 {
     font-family: 'PT Serif', serif;
-    font-size: 17px;
-    margin: 0 0 4px;
+    font-size: 18px;
+    margin: 0 0 6px;
+    color: var(--moss-deep);
   }
-  .card .body p {
+  .card .meta {
     font-size: 12px;
-    color: var(--muted);
+    color: var(--ink-soft);
+    margin: 0 0 10px;
+  }
+  .card .teaser {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink);
     margin: 0;
   }
+
   footer {
-    max-width: 960px;
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 0 24px 56px;
-    font-size: 13px;
-    color: var(--muted);
+    padding: 0 24px 48px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 30px; }
+    .map-wrap { height: 340px; }
   }
 </style>
 </head>
 <body>
 
-<header>
+<header class="hero">
+  <p class="eyebrow">Навигатор по Подмосковью</p>
   <h1>Усадьбы Москвы и области</h1>
-  <p>Дворцы, парки и литературные гнёзда в часе езды от города — с историей каждого места.</p>
-  <input type="text" placeholder="Поиск по названию или району" id="search">
+  <p class="tagline">Дворцы, парки и литературные гнёзда в часе езды от города — с историей каждого места и картой, по которой можно проложить свой маршрут</p>
+  <div class="flourish">
+    <span></span>
+    <svg viewBox="0 0 10 10"><rect x="3" y="3" width="4" height="4" transform="rotate(45 5 5)" fill="#A2472E"/></svg>
+    <span></span>
+  </div>
 </header>
 
-<main>
-  <div class="chips" id="chips"></div>
-  <div class="grid" id="grid"></div>
-</main>
+<section class="map-section">
+  <div class="map-wrap" id="mapWrap">
+    <svg viewBox="0 0 460 440" style="position:absolute; inset:0; width:100%; height:100%;" aria-hidden="true">
+      <path d="M70,90 C50,150 40,240 65,310 C88,375 150,415 225,420 C310,425 385,375 410,305 C432,240 420,155 380,100 C335,40 255,18 185,24 C125,29 90,48 70,90 Z"
+            fill="none" stroke="#C9B87E" stroke-width="1.2"/>
+      <circle cx="230" cy="220" r="62" fill="none" stroke="#C9B87E" stroke-width="1" stroke-dasharray="2,4"/>
+      <line x1="230" y1="60" x2="230" y2="400" stroke="#D9C99A" stroke-width="0.7" stroke-dasharray="1,5"/>
+      <line x1="80" y1="220" x2="400" y2="220" stroke="#D9C99A" stroke-width="0.7" stroke-dasharray="1,5"/>
+      <circle cx="230" cy="220" r="3.5" fill="#2C3A24"/>
+      <text x="230" y="238" text-anchor="middle" font-size="11" fill="#6B6350" font-family="PT Serif, serif">Москва</text>
+    </svg>
+    <div id="pins"></div>
+  </div>
+  <div class="info-panel" id="infoPanel"></div>
+</section>
 
-<footer>Портал в разработке · usadby.ru</footer>
+<section class="filters">
+  <input type="text" id="search" placeholder="Поиск по названию">
+  <div class="chips" id="chips"></div>
+</section>
+
+<main class="grid" id="grid"></main>
+
+<footer>Навигатор по усадьбам Москвы и области · в разработке</footer>
 
 <script>
   const estates = [
-    { name: "Архангельское", cat: "Дворцы", meta: "18 км · запад" },
-    { name: "Кусково", cat: "Дворцы", meta: "в черте города" },
-    { name: "Останкино", cat: "Дворцы", meta: "в черте города" },
-    { name: "Царицыно", cat: "Парки", meta: "в черте города" },
-    { name: "Коломенское", cat: "Парки", meta: "в черте города" },
-    { name: "Абрамцево", cat: "Литературные", meta: "60 км · северо-восток" },
-    { name: "Мелихово", cat: "Литературные", meta: "75 км · юг" },
-    { name: "Быково", cat: "Заброшенные", meta: "35 км · юго-восток" }
+    { name: "Архангельское", cat: "Дворцы", meta: "18 км · запад", x: 20, y: 34,
+      desc: "Усадьба Юсуповых на высоком берегу Москвы-реки. Дворец, французский регулярный парк с террасами и статуями, храм-усыпальница." },
+    { name: "Кусково", cat: "Дворцы", meta: "в черте города · юго-восток", x: 78, y: 55,
+      desc: "Парадная летняя резиденция Шереметевых: грот, оранжерея и один из первых в России пейзажных парков." },
+    { name: "Останкино", cat: "Дворцы", meta: "в черте города · север", x: 58, y: 16,
+      desc: "Деревянный дворец-театр Шереметевых с уникальной для XVIII века крепостной театральной машинерией." },
+    { name: "Царицыно", cat: "Парки", meta: "в черте города · юг", x: 48, y: 74,
+      desc: "Неоготическая резиденция, заказанная Екатериной II архитектору Баженову и так и не достроенная при её жизни." },
+    { name: "Коломенское", cat: "Парки", meta: "в черте города · юг", x: 40, y: 84,
+      desc: "Бывшая царская резиденция. Храм Вознесения Господня входит в список Всемирного наследия ЮНЕСКО." },
+    { name: "Абрамцево", cat: "Литературные", meta: "60 км · северо-восток", x: 30, y: 10,
+      desc: "Усадьба Аксаковых, позже Мамонтовых — центр притяжения художников и писателей второй половины XIX века." },
+    { name: "Мелихово", cat: "Литературные", meta: "75 км · юг", x: 36, y: 98,
+      desc: "Здесь Антон Чехов прожил семь лет и написал «Чайку» и «Дядю Ваню». Сохранён подлинный флигель-кабинет." },
+    { name: "Дубровицы", cat: "Редкие", meta: "40 км · юг", x: 84, y: 90,
+      desc: "Церковь Знамения в стиле, не имеющем прямых аналогов в русской архитектуре — на стыке барокко и европейской пластики." }
   ];
-  const cats = ["Все", "Дворцы", "Парки", "Литературные", "Заброшенные"];
+  const cats = ["Все", "Дворцы", "Парки", "Литературные", "Редкие"];
   let filter = "Все";
   let query = "";
+  let active = 0;
 
-  function render() {
+  function matches(e) {
+    return (filter === "Все" || e.cat === filter) && e.name.toLowerCase().includes(query.toLowerCase());
+  }
+
+  function renderPins() {
+    document.getElementById("pins").innerHTML = estates.map((e, i) => `
+      <button class="pin ${i === active ? "active" : ""} ${matches(e) ? "" : "dim"}" data-i="${i}" style="left:${e.x}%; top:${e.y}%;" aria-label="${e.name}">
+        <span class="dot"></span>
+        <span class="label">${e.name}</span>
+      </button>
+    `).join("");
+    document.querySelectorAll(".pin").forEach(b =>
+      b.addEventListener("click", () => { active = parseInt(b.dataset.i); renderPins(); renderPanel(); })
+    );
+  }
+
+  function renderPanel() {
+    const e = estates[active];
+    document.getElementById("infoPanel").innerHTML = `
+      <span class="badge">${e.cat}</span>
+      <h3>${e.name}</h3>
+      <p class="meta">${e.meta}</p>
+      <p class="desc">${e.desc}</p>
+    `;
+  }
+
+  function renderChips() {
     document.getElementById("chips").innerHTML = cats.map(c =>
-      `<button class="chip${c === filter ? " active" : ""}" data-c="${c}">${c}</button>`
+      `<button class="chip ${c === filter ? "active" : ""}" data-c="${c}">${c}</button>`
     ).join("");
-
     document.querySelectorAll(".chip").forEach(b =>
-      b.addEventListener("click", () => { filter = b.dataset.c; render(); })
+      b.addEventListener("click", () => { filter = b.dataset.c; renderAll(); })
     );
+  }
 
-    const list = estates.filter(e =>
-      (filter === "Все" || e.cat === filter) &&
-      e.name.toLowerCase().includes(query.toLowerCase())
-    );
-
+  function renderGrid() {
+    const list = estates.filter(matches);
     document.getElementById("grid").innerHTML = list.map(e => `
-      <a class="card" href="#">
-        <div class="photo">фото объекта</div>
+      <a class="card" href="#" data-name="${e.name}">
+        <div class="top"></div>
         <div class="body">
+          <p class="cat">${e.cat}</p>
           <h3>${e.name}</h3>
-          <p>${e.cat} · ${e.meta}</p>
+          <p class="meta">${e.meta}</p>
+          <p class="teaser">${e.desc}</p>
         </div>
       </a>
-    `).join("") || `<p style="color:var(--muted); font-size:14px;">Ничего не найдено</p>`;
+    `).join("") || `<p style="color:var(--ink-soft); font-size:14px;">Ничего не найдено</p>`;
+
+    document.querySelectorAll(".card").forEach(c =>
+      c.addEventListener("click", (ev) => {
+        ev.preventDefault();
+        const i = estates.findIndex(e => e.name === c.dataset.name);
+        active = i;
+        renderPins();
+        renderPanel();
+        document.getElementById("mapWrap").scrollIntoView({ behavior: "smooth", block: "center" });
+      })
+    );
+  }
+
+  function renderAll() {
+    renderChips();
+    renderPins();
+    renderPanel();
+    renderGrid();
   }
 
   document.getElementById("search").addEventListener("input", e => {
     query = e.target.value;
-    render();
+    renderAll();
   });
 
-  render();
+  renderAll();
 </script>
 
 </body>
