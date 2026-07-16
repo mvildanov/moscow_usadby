@@ -169,7 +169,10 @@
 
       document.title = e.name + " — навигатор по Подмосковью";
 
-      const related = data.filter(x => x.cat === e.cat && x.slug !== e.slug).slice(0, 3);
+      const related = (e.related && e.related.length
+        ? e.related.map(slug => data.find(x => x.slug === slug)).filter(Boolean)
+        : data.filter(x => x.cat === e.cat && x.slug !== e.slug)
+      ).slice(0, 3);
       const relatedHtml = related.length ? `
         <section class="related">
           <h2>Похожие места</h2>
