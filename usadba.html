@@ -156,7 +156,7 @@
 <script>
   const accessNames = { "свободный": "Свободный вход", "билет": "По билету", "снаружи": "Только снаружи", "закрыт": "Закрыт" };
   const checkIcon = `<svg viewBox="0 0 24 24"><polyline points="4 13 9 18 20 6"/></svg>`;
-  const starIcon = `<svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>`;
+  const starIcon = `<svg viewBox="0 0 24 34"><path class="ribbon" d="M2,2 L22,2 L22,32 L12,24 L2,32 Z"/></svg>`;
   let visited = new Set(JSON.parse(localStorage.getItem("visitedEstates") || "[]"));
   let favorites = new Set(JSON.parse(localStorage.getItem("favoriteEstates") || "[]"));
   const params = new URLSearchParams(location.search);
