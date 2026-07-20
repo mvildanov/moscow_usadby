@@ -154,6 +154,7 @@
 <footer>Навигатор по усадьбам Москвы и области · в разработке</footer>
 
 <script>
+  const accessNames = { "свободный": "Свободный вход", "билет": "По билету", "снаружи": "Только снаружи", "закрыт": "Закрыт" };
   const params = new URLSearchParams(location.search);
   const slug = params.get("slug");
 
@@ -234,6 +235,10 @@
             <div class="box">
               <h3>Как добраться</h3>
               <p>${e.getThere}</p>
+            </div>
+            <div class="box">
+              <h3>Доступность</h3>
+              <p><span class="access-tag ${e.access}">${accessNames[e.access] || e.access}</span></p>
             </div>
             <div class="box">
               <h3>Часы работы и билеты</h3>

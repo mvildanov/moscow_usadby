@@ -111,6 +111,20 @@
     flex-wrap: wrap;
     align-items: center;
   }
+  .filter-row {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 10px 24px 0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .filter-label {
+    font-size: 12px;
+    color: var(--ink-soft);
+    min-width: 76px;
+  }
   input[type="text"] {
     height: 40px;
     flex: 1 1 220px;
@@ -203,7 +217,15 @@
 <section class="filters">
   <label for="search" class="sr-only">Поиск усадьбы по названию</label>
   <input type="text" id="search" placeholder="Поиск по названию">
+</section>
+
+<section class="filter-row">
+  <span class="filter-label">Категория:</span>
   <div class="chips" id="chips"></div>
+</section>
+<section class="filter-row">
+  <span class="filter-label">Доступность:</span>
+  <div class="chips" id="chipsAccess"></div>
 </section>
 
 <main class="grid" id="grid"></main>
@@ -213,12 +235,17 @@
 <script>
   let estates = [];
   const cats = ["Все", "Дворцы", "Парки", "Литературные", "Редкие"];
+  const accessLevels = ["Все", "свободный", "билет", "снаружи", "закрыт"];
+  const accessNames = { "свободный": "Свободный вход", "билет": "По билету", "снаружи": "Только снаружи", "закрыт": "Закрыт" };
   let filter = "Все";
+  let accessFilter = "Все";
   let query = "";
   let active = 0;
 
   function matches(e) {
-    return (filter === "Все" || e.cat === filter) && e.name.toLowerCase().includes(query.toLowerCase());
+    return (filter === "Все" || e.cat === filter)
+      && (accessFilter === "Все" || e.access === accessFilter)
+      && e.name.toLowerCase().includes(query.toLowerCase());
   }
 
   function renderPins() {
@@ -237,7 +264,10 @@
     const e = estates[active];
     if (!e) return;
     document.getElementById("infoPanel").innerHTML = `
-      <span class="badge">${e.cat}</span>
+      <div style="display:flex; gap:6px; margin-bottom:12px;">
+        <span class="badge">${e.cat}</span>
+        <span class="access-tag ${e.access}">${accessNames[e.access] || e.access}</span>
+      </div>
       <h3>${e.name}</h3>
       <p class="meta">${e.meta}</p>
       <p class="desc">${e.teaser}</p>
@@ -249,8 +279,15 @@
     document.getElementById("chips").innerHTML = cats.map(c =>
       `<button class="chip ${c === filter ? "active" : ""}" data-c="${c}" aria-pressed="${c === filter}">${c}</button>`
     ).join("");
-    document.querySelectorAll(".chip").forEach(b =>
+    document.querySelectorAll("#chips .chip").forEach(b =>
       b.addEventListener("click", () => { filter = b.dataset.c; renderAll(); })
+    );
+
+    document.getElementById("chipsAccess").innerHTML = accessLevels.map(a =>
+      `<button class="chip ${a === accessFilter ? "active" : ""}" data-a="${a}" aria-pressed="${a === accessFilter}">${a === "Все" ? "Все" : accessNames[a]}</button>`
+    ).join("");
+    document.querySelectorAll("#chipsAccess .chip").forEach(b =>
+      b.addEventListener("click", () => { accessFilter = b.dataset.a; renderAll(); })
     );
   }
 
@@ -261,6 +298,7 @@
         <div class="photo">
           <img src="images/${e.slug}.jpg" alt="${e.name}" loading="lazy" onerror="this.style.display='none'">
           <span class="ph-text">фото усадьбы</span>
+          <span class="access-tag ${e.access}" style="position:absolute; top:8px; right:8px;">${accessNames[e.access] || e.access}</span>
         </div>
         <div class="body">
           <p class="cat">${e.cat}</p>
