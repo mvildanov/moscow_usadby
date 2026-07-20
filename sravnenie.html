@@ -87,9 +87,14 @@
 
   @media (max-width: 640px) {
     .pickers { grid-template-columns: 1fr; }
-    .cmp-row { grid-template-columns: 90px 1fr 1fr; }
-    .cmp-row .val { padding: 10px 10px; font-size: 13px; }
-    .cmp-row.head .val { font-size: 15px; }
+    .cmp-row { grid-template-columns: 1fr; }
+    .cmp-row .lbl { border-bottom: 1px solid var(--line); }
+    .cmp-row .val { padding: 10px 14px; font-size: 13px; border-left: none; border-bottom: 1px solid var(--line); }
+    .cmp-row .val:last-child { border-bottom: none; }
+    .cmp-row.head .val { font-size: 16px; }
+    .cmp-row .val-a::before { content: "А — "; color: var(--brick); font-weight: 600; font-family: 'Inter', sans-serif; font-size: 11px; }
+    .cmp-row .val-b::before { content: "Б — "; color: var(--brick); font-weight: 600; font-family: 'Inter', sans-serif; font-size: 11px; }
+    .cmp-row.head .val-a::before, .cmp-row.head .val-b::before { display: block; margin-bottom: 2px; }
   }
 </style>
 </head>
@@ -162,8 +167,8 @@
     document.getElementById("table").innerHTML = rows.map(r => `
       <div class="cmp-row ${r.head ? "head" : ""}">
         <div class="lbl">${r.lbl}</div>
-        <div class="val">${r.a}</div>
-        <div class="val">${r.b}</div>
+        <div class="val val-a">${r.a}</div>
+        <div class="val val-b">${r.b}</div>
       </div>
     `).join("");
   }
