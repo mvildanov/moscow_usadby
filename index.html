@@ -166,6 +166,7 @@
     <span></span>
   </div>
   <p style="margin:16px 0 0;"><a href="marshruty.html" style="font-size:13px; color:var(--brick); text-decoration:none; border-bottom:1px dotted var(--brick);">Маршруты одного дня →</a></p>
+  <div class="progress-wrap" id="progressWrap"></div>
 </header>
 
 <section class="map-section" id="map-section">
@@ -291,6 +292,28 @@
     );
   }
 
+  let visited = new Set(JSON.parse(localStorage.getItem("visitedEstates") || "[]"));
+  const checkIcon = `<svg viewBox="0 0 24 24"><polyline points="4 13 9 18 20 6"/></svg>`;
+
+  function toggleVisited(slug, ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    if (visited.has(slug)) visited.delete(slug); else visited.add(slug);
+    localStorage.setItem("visitedEstates", JSON.stringify([...visited]));
+    renderGrid();
+    renderProgress();
+  }
+
+  function renderProgress() {
+    const total = estates.length;
+    const done = estates.filter(e => visited.has(e.slug)).length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    document.getElementById("progressWrap").innerHTML = total ? `
+      <p>Посещено ${done} из ${total}</p>
+      <div class="progress-bar"><div class="fill" style="width:${pct}%"></div></div>
+    ` : "";
+  }
+
   function renderGrid() {
     const list = estates.filter(matches);
     document.getElementById("grid").innerHTML = list.map(e => `
@@ -298,6 +321,7 @@
         <div class="photo">
           <img src="images/${e.slug}.jpg" alt="${e.name}" loading="lazy" onerror="this.style.display='none'">
           <span class="ph-text">фото усадьбы</span>
+          <button class="visit-toggle ${visited.has(e.slug) ? "visited" : ""}" aria-label="${visited.has(e.slug) ? "Отметить как не посещённое" : "Отметить как посещённое"}" onclick="toggleVisited('${e.slug}', event)">${checkIcon}</button>
           <span class="access-tag ${e.access}" style="position:absolute; top:8px; right:8px;">${accessNames[e.access] || e.access}</span>
         </div>
         <div class="body">
@@ -315,6 +339,7 @@
     renderPins();
     renderPanel();
     renderGrid();
+    renderProgress();
   }
 
   document.getElementById("search").addEventListener("input", e => {

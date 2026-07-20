@@ -135,6 +135,56 @@ h1 {
 .access-tag.снаружи { background: #EAD2C8; color: #7A3A22; }
 .access-tag.закрыт { background: #DCD4CC; color: #6B6350; }
 
+/* Visited tracking */
+.visit-toggle {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(242,234,211,0.92);
+  border: 1.5px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  z-index: 2;
+}
+.visit-toggle svg { width: 14px; height: 14px; stroke: var(--ink-soft); fill: none; stroke-width: 2.5; }
+.visit-toggle.visited { background: var(--moss); border-color: var(--moss); }
+.visit-toggle.visited svg { stroke: var(--paper); }
+
+.progress-wrap { max-width: 320px; margin: 18px auto 0; }
+.progress-wrap p { font-size: 12px; color: var(--ink-soft); margin: 0 0 6px; text-align: center; }
+.progress-bar {
+  height: 6px;
+  background: var(--paper-deep);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-bar .fill { height: 100%; background: var(--moss); transition: width 0.3s ease; }
+
+.visited-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink-soft);
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+.visited-btn svg { width: 14px; height: 14px; stroke: var(--ink-soft); fill: none; stroke-width: 2.5; }
+.visited-btn.visited { background: var(--moss); border-color: var(--moss); color: var(--paper); }
+.visited-btn.visited svg { stroke: var(--paper); }
+
 footer {
   max-width: 1000px;
   margin: 0 auto;

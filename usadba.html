@@ -155,6 +155,8 @@
 
 <script>
   const accessNames = { "свободный": "Свободный вход", "билет": "По билету", "снаружи": "Только снаружи", "закрыт": "Закрыт" };
+  const checkIcon = `<svg viewBox="0 0 24 24"><polyline points="4 13 9 18 20 6"/></svg>`;
+  let visited = new Set(JSON.parse(localStorage.getItem("visitedEstates") || "[]"));
   const params = new URLSearchParams(location.search);
   const slug = params.get("slug");
 
@@ -211,7 +213,10 @@
 
       content.innerHTML = `
         <header class="detail-hero">
-          <span class="badge">${e.cat}</span>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+            <span class="badge">${e.cat}</span>
+            <button class="visited-btn ${visited.has(e.slug) ? "visited" : ""}" id="visitBtn">${checkIcon}<span id="visitBtnText">${visited.has(e.slug) ? "Посещено" : "Отметить как посещённое"}</span></button>
+          </div>
           <h1>${e.name}</h1>
           <p class="meta">${e.meta} · ${e.era}</p>
         </header>
@@ -251,6 +256,15 @@
 
         ${relatedHtml}
       `;
+
+      document.getElementById("visitBtn").addEventListener("click", () => {
+        if (visited.has(e.slug)) visited.delete(e.slug); else visited.add(e.slug);
+        localStorage.setItem("visitedEstates", JSON.stringify([...visited]));
+        const btn = document.getElementById("visitBtn");
+        const isVisited = visited.has(e.slug);
+        btn.classList.toggle("visited", isVisited);
+        document.getElementById("visitBtnText").textContent = isVisited ? "Посещено" : "Отметить как посещённое";
+      });
     })
     .catch(() => {
       document.getElementById("content").innerHTML = `
