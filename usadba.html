@@ -11,18 +11,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="style.css">
 <style>
-  nav.back {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 24px 24px 0;
-  }
-  nav.back a {
-    font-size: 13px;
-    color: var(--ink-soft);
-    text-decoration: none;
-  }
-  nav.back a:hover { color: var(--brick); }
-
   .detail-hero {
     max-width: 1000px;
     margin: 0 auto;
@@ -147,7 +135,15 @@
 <body>
 <a href="#content" class="skip-link">Перейти к содержимому</a>
 
-<nav class="back"><a href="index.html">← Все усадьбы</a> · <a href="marshruty.html">Маршруты →</a></nav>
+<nav class="site-nav">
+  <a href="index.html" class="site-nav-home">Усадьбы Подмосковья</a>
+  <div class="site-nav-links">
+    <a href="index.html">Все усадьбы</a>
+    <a href="marshruty.html">Маршруты</a>
+    <a href="kuda-poehat.html">Куда поехать?</a>
+    <a href="sravnenie.html">Сравнить</a>
+  </div>
+</nav>
 
 <div id="content"></div>
 

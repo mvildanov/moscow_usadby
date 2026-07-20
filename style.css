@@ -221,6 +221,40 @@ h1 {
 .visited-btn.visited { background: var(--moss); border-color: var(--moss); color: var(--paper); }
 .visited-btn.visited svg { stroke: var(--paper); }
 
+/* Site navigation */
+.site-nav {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.site-nav-home {
+  font-family: 'PT Serif', serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--moss-deep);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.site-nav-links { display: flex; gap: 18px; flex-wrap: wrap; }
+.site-nav-links a {
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  padding-bottom: 2px;
+}
+.site-nav-links a:hover { color: var(--brick); }
+.site-nav-links a.active {
+  color: var(--brick);
+  font-weight: 600;
+  border-bottom: 1px dotted var(--brick);
+}
+
 footer {
   max-width: 1000px;
   margin: 0 auto;
