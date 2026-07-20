@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Страница не найдена — навигатор по Подмосковью</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  .lost {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 90px 24px 40px;
+    text-align: center;
+  }
+  .lost .glyph {
+    font-family: 'PT Serif', serif;
+    font-size: 64px;
+    color: var(--moss);
+    margin: 0 0 8px;
+    line-height: 1;
+  }
+  .lost h1 { font-size: 28px; margin-bottom: 10px; }
+  .lost p { font-size: 15px; color: var(--ink-soft); line-height: 1.6; margin: 0 0 28px; }
+  .lost .links {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .lost .links a {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--paper);
+    background: var(--moss);
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+  }
+  .lost .links a.secondary {
+    background: none;
+    color: var(--brick);
+    border: 1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Перейти к содержимому</a>
+
+<div class="lost" id="main-content">
+  <p class="glyph">⌂</p>
+  <h1>Такой усадьбы не нашлось</h1>
+  <p>Страница, которую вы искали, не существует или переехала — а может, просто опечатка в адресе. Но в базе есть ещё 26 настоящих усадеб.</p>
+  <div class="links">
+    <a href="index.html">На главную →</a>
+    <a href="marshruty.html" class="secondary">Маршруты одного дня</a>
+  </div>
+</div>
+
+<footer>Навигатор по усадьбам Москвы и области · в разработке</footer>
+
+</body>
+</html>
