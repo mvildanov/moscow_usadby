@@ -143,7 +143,7 @@
 </head>
 <body>
 
-<nav class="back"><a href="index.html">← Все усадьбы</a></nav>
+<nav class="back"><a href="index.html">← Все усадьбы</a> · <a href="marshruty.html">Маршруты →</a></nav>
 
 <div id="content"></div>
 
@@ -153,9 +153,11 @@
   const params = new URLSearchParams(location.search);
   const slug = params.get("slug");
 
-  fetch("estates.json")
-    .then(r => r.json())
-    .then(data => {
+  Promise.all([
+    fetch("estates.json").then(r => r.json()),
+    fetch("routes.json").then(r => r.json()).catch(() => [])
+  ])
+    .then(([data, routes]) => {
       const e = data.find(x => x.slug === slug);
       const content = document.getElementById("content");
 
@@ -168,6 +170,14 @@
       }
 
       document.title = e.name + " — навигатор по Подмосковью";
+
+      const myRoute = routes.find(r => r.estates.includes(e.slug));
+      const routeHtml = myRoute ? `
+            <div class="box">
+              <h3>Маршрут</h3>
+              <p>Входит в «${myRoute.title}»</p>
+              <a class="map-link" href="marshruty.html#${myRoute.slug}">Смотреть маршрут →</a>
+            </div>` : "";
 
       const related = (e.related && e.related.length
         ? e.related.map(slug => data.find(x => x.slug === slug)).filter(Boolean)
@@ -226,6 +236,7 @@
               <p>Уточняйте на официальном сайте усадьбы — расписание и цены периодически меняются.</p>
               <a class="map-link" href="index.html">Показать на карте →</a>
             </div>
+            ${routeHtml}
           </aside>
         </section>
 

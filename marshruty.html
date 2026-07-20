@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Маршруты одного дня — навигатор по Подмосковью</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  nav.back {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px 24px 0;
+  }
+  nav.back a { font-size: 13px; color: var(--ink-soft); text-decoration: none; }
+  nav.back a:hover { color: var(--brick); }
+
+  .intro {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px 24px 0;
+  }
+  .intro p { font-size: 15px; color: var(--ink-soft); max-width: 560px; line-height: 1.6; margin: 0; }
+
+  main.routes {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 28px 24px 70px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .route {
+    background: var(--paper-deep);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 24px 28px;
+    scroll-margin-top: 20px;
+  }
+  .route h2 {
+    font-family: 'PT Serif', serif;
+    font-size: 22px;
+    color: var(--moss-deep);
+    margin: 0 0 10px;
+  }
+  .route .lead {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 18px;
+    max-width: 640px;
+  }
+  .route ol {
+    list-style: none;
+    counter-reset: stop;
+    margin: 0 0 16px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .route ol li {
+    counter-increment: stop;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .route ol li a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 6px 14px 6px 8px;
+    text-decoration: none;
+    color: var(--moss-deep);
+    font-size: 13px;
+    font-family: 'PT Serif', serif;
+  }
+  .route ol li a:hover { border-color: var(--brick); color: var(--brick); }
+  .route ol li a .num {
+    background: var(--moss);
+    color: var(--paper);
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .route ol li:not(:last-child)::after {
+    content: "→";
+    color: var(--line);
+    margin-left: 2px;
+  }
+  .route .tip {
+    font-size: 13px;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+    margin: 0;
+    line-height: 1.6;
+  }
+  .route .tip b { color: var(--brick); font-weight: 600; }
+
+  @media (max-width: 640px) {
+    .route ol li:not(:last-child)::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="back"><a href="index.html">← Все усадьбы</a></nav>
+
+<header class="hero" style="text-align:left; padding-bottom:10px;">
+  <p class="eyebrow">Навигатор по Подмосковью</p>
+  <h1 style="text-align:left;">Маршруты одного дня</h1>
+</header>
+<div class="intro">
+  <p>Усадьбы, которые физически лежат рядом друг с другом или на одной дороге — собрали в готовые связки, чтобы не пришлось прокладывать логистику самим.</p>
+</div>
+
+<main class="routes" id="routes"></main>
+
+<footer>Навигатор по усадьбам Москвы и области · в разработке</footer>
+
+<script>
+  Promise.all([
+    fetch("routes.json").then(r => r.json()),
+    fetch("estates.json").then(r => r.json())
+  ]).then(([routes, estates]) => {
+    const byId = Object.fromEntries(estates.map(e => [e.slug, e]));
+
+    document.getElementById("routes").innerHTML = routes.map(route => `
+      <section class="route" id="${route.slug}">
+        <h2>${route.title}</h2>
+        <p class="lead">${route.intro}</p>
+        <ol>
+          ${route.estates.map((slug, i) => {
+            const e = byId[slug];
+            if (!e) return "";
+            return `<li><a href="usadba.html?slug=${slug}"><span class="num">${i + 1}</span>${e.name}</a></li>`;
+          }).join("")}
+        </ol>
+        <p class="tip"><b>Как совместить: </b>${route.tip}</p>
+      </section>
+    `).join("");
+  }).catch(() => {
+    document.getElementById("routes").innerHTML =
+      `<p style="color:var(--brick); font-size:14px;">Не удалось загрузить маршруты. Проверьте, что routes.json и estates.json лежат рядом с этой страницей.</p>`;
+  });
+</script>
+
+</body>
+</html>
