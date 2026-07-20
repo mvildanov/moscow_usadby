@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Куда поехать? — навигатор по Подмосковью</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  nav.back {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px 24px 0;
+  }
+  nav.back a { font-size: 13px; color: var(--ink-soft); text-decoration: none; }
+  nav.back a:hover { color: var(--brick); }
+
+  main.quiz-wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 30px 24px 70px;
+  }
+  .quiz-progress {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin: 0 0 8px;
+  }
+  .quiz-question h2 {
+    font-family: 'PT Serif', serif;
+    font-size: 24px;
+    color: var(--moss-deep);
+    margin: 0 0 22px;
+  }
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .quiz-option {
+    text-align: left;
+    background: var(--paper-deep);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px 18px;
+    font-family: 'PT Serif', serif;
+    font-size: 16px;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .quiz-option:hover { border-color: var(--brick); }
+  .quiz-back {
+    margin-top: 22px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+  }
+  .quiz-back:hover { color: var(--brick); }
+
+  .quiz-results h2 {
+    font-family: 'PT Serif', serif;
+    font-size: 24px;
+    color: var(--moss-deep);
+    margin: 0 0 6px;
+  }
+  .quiz-results p.sub {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 0 0 22px;
+  }
+  .quiz-results .row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 26px;
+  }
+  .restart-btn {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--paper);
+    background: var(--moss);
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Перейти к содержимому</a>
+
+<nav class="back"><a href="index.html">← Все усадьбы</a> · <a href="marshruty.html">Маршруты</a></nav>
+
+<header class="hero" style="text-align:left; padding-bottom:6px;">
+  <p class="eyebrow">Навигатор по Подмосковью</p>
+  <h1 style="text-align:left;">Куда поехать?</h1>
+</header>
+
+<main class="quiz-wrap" id="main-content"></main>
+
+<footer>Навигатор по усадьбам Москвы и области · в разработке</footer>
+
+<script>
+  const questions = [
+    {
+      key: "time",
+      title: "Сколько у тебя времени?",
+      options: [
+        { label: "Пара часов", value: "short" },
+        { label: "Полдня", value: "half" },
+        { label: "Весь день", value: "full" }
+      ]
+    },
+    {
+      key: "interest",
+      title: "Что тебе интереснее?",
+      options: [
+        { label: "Дворцы и парадные резиденции", value: "Дворцы" },
+        { label: "Парки для прогулки", value: "Парки" },
+        { label: "Литературные истории", value: "Литературные" },
+        { label: "Необычные и редкие места", value: "Редкие" },
+        { label: "Всё равно", value: "any" }
+      ]
+    },
+    {
+      key: "access",
+      title: "Готов ли ехать, если внутрь не попасть?",
+      options: [
+        { label: "Хочу точно попасть внутрь", value: "inside" },
+        { label: "Не страшно, можно посмотреть и снаружи", value: "any" }
+      ]
+    }
+  ];
+
+  let estates = [];
+  let step = 0;
+  const answers = {};
+
+  function parseKm(meta) {
+    if (meta.includes("в черте города")) return 0;
+    const m = meta.match(/(\d+)\s*км/);
+    return m ? parseInt(m[1], 10) : 999;
+  }
+
+  function shuffle(arr) {
+    return [...arr].sort(() => Math.random() - 0.5);
+  }
+
+  function getMatches() {
+    const maxKm = answers.time === "short" ? 20 : answers.time === "half" ? 50 : Infinity;
+    const base = estates.filter(e => parseKm(e.meta) <= maxKm && e.access !== "закрыт");
+
+    let pool = base;
+    if (answers.access === "inside") {
+      const f = pool.filter(e => e.access !== "снаружи");
+      if (f.length) pool = f;
+    }
+    if (answers.interest !== "any") {
+      const f = pool.filter(e => e.cat === answers.interest);
+      if (f.length) pool = f;
+    }
+    return shuffle(pool).slice(0, 3);
+  }
+
+  function renderQuestion() {
+    const q = questions[step];
+    document.getElementById("main-content").innerHTML = `
+      <p class="quiz-progress">Вопрос ${step + 1} из ${questions.length}</p>
+      <div class="quiz-question">
+        <h2>${q.title}</h2>
+        <div class="quiz-options">
+          ${q.options.map(o => `<button class="quiz-option" data-v="${o.value}">${o.label}</button>`).join("")}
+        </div>
+        ${step > 0 ? `<button class="quiz-back" id="backBtn">← Назад</button>` : ""}
+      </div>
+    `;
+    document.querySelectorAll(".quiz-option").forEach(b =>
+      b.addEventListener("click", () => {
+        answers[q.key] = b.dataset.v;
+        step++;
+        if (step < questions.length) renderQuestion(); else renderResults();
+      })
+    );
+    if (step > 0) {
+      document.getElementById("backBtn").addEventListener("click", () => {
+        step--;
+        renderQuestion();
+      });
+    }
+  }
+
+  function renderResults() {
+    const matches = getMatches();
+    document.getElementById("main-content").innerHTML = `
+      <div class="quiz-results">
+        <h2>Похоже, тебе подойдёт</h2>
+        <p class="sub">${matches.length ? "Собрали по твоим ответам:" : "Точных совпадений не нашлось, но вот что есть в базе:"}</p>
+        <div class="row">
+          ${matches.map(e => `
+            <a class="card" href="usadba.html?slug=${e.slug}">
+              <div class="photo">
+                <img src="images/${e.slug}.jpg" alt="${e.name}" loading="lazy" onerror="this.style.display='none'">
+                <span class="ph-text">фото усадьбы</span>
+              </div>
+              <div class="body">
+                <p class="cat">${e.cat}</p>
+                <h3>${e.name}</h3>
+                <p class="meta">${e.meta}</p>
+                <p class="teaser">${e.teaser}</p>
+              </div>
+            </a>
+          `).join("")}
+        </div>
+        <button class="restart-btn" id="restartBtn">Пройти заново</button>
+      </div>
+    `;
+    document.getElementById("restartBtn").addEventListener("click", () => {
+      step = 0;
+      delete answers.time; delete answers.interest; delete answers.access;
+      renderQuestion();
+    });
+  }
+
+  fetch("estates.json")
+    .then(r => r.json())
+    .then(data => { estates = data; renderQuestion(); })
+    .catch(() => {
+      document.getElementById("main-content").innerHTML =
+        `<p style="color:var(--brick); font-size:14px;">Не удалось загрузить данные усадеб (estates.json). Проверьте, что файл лежит рядом с этой страницей.</p>`;
+    });
+</script>
+
+</body>
+</html>
