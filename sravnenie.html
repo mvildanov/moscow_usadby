@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сравнение усадеб — навигатор по Подмосковью</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  nav.back {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px 24px 0;
+  }
+  nav.back a { font-size: 13px; color: var(--ink-soft); text-decoration: none; }
+  nav.back a:hover { color: var(--brick); }
+
+  main.compare {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 28px 24px 70px;
+  }
+  .pickers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 26px;
+  }
+  .pickers label {
+    display: block;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .pickers select {
+    width: 100%;
+    height: 42px;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+    background: var(--paper-deep);
+    padding: 0 12px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--ink);
+  }
+
+  .cmp-table {
+    background: var(--paper-deep);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .cmp-row {
+    display: grid;
+    grid-template-columns: 110px 1fr 1fr;
+    border-bottom: 1px solid var(--line);
+  }
+  .cmp-row:last-child { border-bottom: none; }
+  .cmp-row .lbl {
+    padding: 14px 12px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--brick);
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+  }
+  .cmp-row .val {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.5;
+    border-left: 1px solid var(--line);
+  }
+  .cmp-row.head .val {
+    font-family: 'PT Serif', serif;
+    font-size: 19px;
+    color: var(--moss-deep);
+  }
+  .cmp-row.head .val a { color: inherit; text-decoration: none; }
+  .cmp-row.head .val a:hover { color: var(--brick); }
+
+  @media (max-width: 640px) {
+    .pickers { grid-template-columns: 1fr; }
+    .cmp-row { grid-template-columns: 90px 1fr 1fr; }
+    .cmp-row .val { padding: 10px 10px; font-size: 13px; }
+    .cmp-row.head .val { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Перейти к содержимому</a>
+
+<nav class="back"><a href="index.html">← Все усадьбы</a> · <a href="marshruty.html">Маршруты</a></nav>
+
+<header class="hero" style="text-align:left; padding-bottom:6px;">
+  <p class="eyebrow">Навигатор по Подмосковью</p>
+  <h1 style="text-align:left;">Сравнение усадеб</h1>
+</header>
+
+<main class="compare" id="main-content">
+  <div class="pickers">
+    <div>
+      <label for="pickA">Усадьба А</label>
+      <select id="pickA"></select>
+    </div>
+    <div>
+      <label for="pickB">Усадьба Б</label>
+      <select id="pickB"></select>
+    </div>
+  </div>
+  <div class="cmp-table" id="table"></div>
+</main>
+
+<footer>Навигатор по усадьбам Москвы и области · в разработке</footer>
+
+<script>
+  const accessNames = { "свободный": "Свободный вход", "билет": "По билету", "снаружи": "Только снаружи", "закрыт": "Закрыт" };
+  let estates = [];
+
+  function byName(a, b) { return a.name.localeCompare(b.name, "ru"); }
+
+  function populateSelects() {
+    const sorted = [...estates].sort(byName);
+    const options = sorted.map(e => `<option value="${e.slug}">${e.name}</option>`).join("");
+    document.getElementById("pickA").innerHTML = options;
+    document.getElementById("pickB").innerHTML = options;
+
+    const params = new URLSearchParams(location.search);
+    const a = params.get("a");
+    const b = params.get("b");
+    document.getElementById("pickA").value = estates.some(e => e.slug === a) ? a : estates[0].slug;
+    document.getElementById("pickB").value = estates.some(e => e.slug === b) ? b : (estates[1] ? estates[1].slug : estates[0].slug);
+  }
+
+  function renderTable() {
+    const a = estates.find(e => e.slug === document.getElementById("pickA").value);
+    const b = estates.find(e => e.slug === document.getElementById("pickB").value);
+    if (!a || !b) return;
+
+    const history = document.location; // placeholder to keep linter calm
+    const params = new URLSearchParams();
+    params.set("a", a.slug);
+    params.set("b", b.slug);
+    window.history.replaceState(null, "", "?" + params.toString());
+
+    const rows = [
+      { lbl: "", a: `<a href="usadba.html?slug=${a.slug}">${a.name} →</a>`, b: `<a href="usadba.html?slug=${b.slug}">${b.name} →</a>`, head: true },
+      { lbl: "Категория", a: a.cat, b: b.cat },
+      { lbl: "Расстояние", a: a.meta, b: b.meta },
+      { lbl: "Эпоха", a: a.era, b: b.era },
+      { lbl: "Доступность", a: `<span class="access-tag ${a.access}">${accessNames[a.access] || a.access}</span>`, b: `<span class="access-tag ${b.access}">${accessNames[b.access] || b.access}</span>` },
+      { lbl: "Кратко", a: a.teaser, b: b.teaser },
+      { lbl: "Как добраться", a: a.getThere, b: b.getThere }
+    ];
+
+    document.getElementById("table").innerHTML = rows.map(r => `
+      <div class="cmp-row ${r.head ? "head" : ""}">
+        <div class="lbl">${r.lbl}</div>
+        <div class="val">${r.a}</div>
+        <div class="val">${r.b}</div>
+      </div>
+    `).join("");
+  }
+
+  document.getElementById("pickA").addEventListener("change", renderTable);
+  document.getElementById("pickB").addEventListener("change", renderTable);
+
+  fetch("estates.json")
+    .then(r => r.json())
+    .then(data => {
+      estates = data;
+      populateSelects();
+      renderTable();
+    })
+    .catch(() => {
+      document.getElementById("table").innerHTML =
+        `<p style="color:var(--brick); font-size:14px; padding:14px;">Не удалось загрузить данные усадеб (estates.json). Проверьте, что файл лежит рядом с этой страницей.</p>`;
+    });
+</script>
+
+</body>
+</html>
