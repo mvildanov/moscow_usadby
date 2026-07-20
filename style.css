@@ -156,6 +156,44 @@ h1 {
 .visit-toggle.visited { background: var(--moss); border-color: var(--moss); }
 .visit-toggle.visited svg { stroke: var(--paper); }
 
+.fav-toggle {
+  position: absolute;
+  top: 8px;
+  left: 40px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(242,234,211,0.92);
+  border: 1.5px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  z-index: 2;
+}
+.fav-toggle svg { width: 14px; height: 14px; stroke: var(--ink-soft); fill: none; stroke-width: 2; }
+.fav-toggle.faved { background: var(--brick); border-color: var(--brick); }
+.fav-toggle.faved svg { stroke: var(--paper); fill: var(--paper); }
+
+.fav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink-soft);
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+.fav-btn svg { width: 14px; height: 14px; stroke: var(--ink-soft); fill: none; stroke-width: 2; }
+.fav-btn.faved { background: var(--brick); border-color: var(--brick); color: var(--paper); }
+.fav-btn.faved svg { stroke: var(--paper); fill: var(--paper); }
+
 .progress-wrap { max-width: 320px; margin: 18px auto 0; }
 .progress-wrap p { font-size: 12px; color: var(--ink-soft); margin: 0 0 6px; text-align: center; }
 .progress-bar {

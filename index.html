@@ -236,6 +236,10 @@
   <span class="filter-label">Доступность:</span>
   <div class="chips" id="chipsAccess"></div>
 </section>
+<section class="filter-row">
+  <span class="filter-label"></span>
+  <button class="chip" id="favOnlyBtn" aria-pressed="false">★ Только избранное</button>
+</section>
 
 <main class="grid" id="grid"></main>
 
@@ -254,6 +258,7 @@
   function matches(e) {
     return (filter === "Все" || e.cat === filter)
       && (accessFilter === "Все" || e.access === accessFilter)
+      && (!favOnly || favorites.has(e.slug))
       && e.name.toLowerCase().includes(query.toLowerCase());
   }
 
@@ -301,7 +306,26 @@
   }
 
   let visited = new Set(JSON.parse(localStorage.getItem("visitedEstates") || "[]"));
+  let favorites = new Set(JSON.parse(localStorage.getItem("favoriteEstates") || "[]"));
+  let favOnly = false;
   const checkIcon = `<svg viewBox="0 0 24 24"><polyline points="4 13 9 18 20 6"/></svg>`;
+  const starIcon = `<svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>`;
+
+  function toggleFavorite(slug, ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    if (favorites.has(slug)) favorites.delete(slug); else favorites.add(slug);
+    localStorage.setItem("favoriteEstates", JSON.stringify([...favorites]));
+    renderGrid();
+    updateFavOnlyBtn();
+  }
+
+  function updateFavOnlyBtn() {
+    const btn = document.getElementById("favOnlyBtn");
+    btn.textContent = `★ Только избранное (${favorites.size})`;
+    btn.classList.toggle("active", favOnly);
+    btn.setAttribute("aria-pressed", favOnly);
+  }
 
   function toggleVisited(slug, ev) {
     ev.preventDefault();
@@ -330,6 +354,7 @@
           <img src="images/${e.slug}.jpg" alt="${e.name}" loading="lazy" onerror="this.style.display='none'">
           <span class="ph-text">фото усадьбы</span>
           <button class="visit-toggle ${visited.has(e.slug) ? "visited" : ""}" aria-label="${visited.has(e.slug) ? "Отметить как не посещённое" : "Отметить как посещённое"}" onclick="toggleVisited('${e.slug}', event)">${checkIcon}</button>
+          <button class="fav-toggle ${favorites.has(e.slug) ? "faved" : ""}" aria-label="${favorites.has(e.slug) ? "Убрать из избранного" : "Добавить в избранное"}" onclick="toggleFavorite('${e.slug}', event)">${starIcon}</button>
           <span class="access-tag ${e.access}" style="position:absolute; top:8px; right:8px;">${accessNames[e.access] || e.access}</span>
         </div>
         <div class="body">
@@ -348,10 +373,16 @@
     renderPanel();
     renderGrid();
     renderProgress();
+    updateFavOnlyBtn();
   }
 
   document.getElementById("search").addEventListener("input", e => {
     query = e.target.value;
+    renderAll();
+  });
+
+  document.getElementById("favOnlyBtn").addEventListener("click", () => {
+    favOnly = !favOnly;
     renderAll();
   });
 
